@@ -4,6 +4,17 @@
 
 Same design as [Omusey](https://github.com/telep-io/omusey): the dropdown is the real web app (`omarchy-launch-webapp`) floating in a Hyprland special workspace named `dots`, placed by a runtime window rule. No config edits, no state files.
 
+## Install
+
+```sh
+omarchy plugin add https://github.com/telep-io/odots.git --enable
+omarchy restart shell
+```
+
+The first click opens ChatGPT Dots as an Omarchy web app in your default (Chromium-based) browser, so if you are signed in to chatgpt.com there, you land straight in Dots. If not, sign in once in that window.
+
+Remove with `omarchy plugin remove telep.dots`.
+
 ## Settings
 
 ```sh
