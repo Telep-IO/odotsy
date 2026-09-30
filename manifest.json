@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "id": "telep.dots",
+  "name": "Odots",
+  "version": "1.0.0",
+  "author": "telep",
+  "license": "MIT",
+  "description": "ChatGPT Dots in the bar: click your dot and the chat drops down from the top. Pop it out into a window when you need more room.",
+  "preview": "preview.png",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Dots",
+    "description": "Your ChatGPT dot in the bar; click to drop the Dots chat down, click again to tuck it away.",
+    "category": "AI",
+    "aliases": [
+      "dots",
+      "chatgpt",
+      "openai"
+    ],
+    "allowMultiple": false,
+    "defaultSection": "center",
+    "defaults": {
+      "width": 480,
+      "heightPercent": 60,
+      "avatar": "",
+      "url": "https://chatgpt.com/dots/home"
+    },
+    "schema": [
+      {
+        "key": "width",
+        "type": "integer",
+        "label": "Dropdown width (px)",
+        "min": 360,
+        "max": 1200,
+        "step": 20,
+        "defaultValue": 480
+      },
+      {
+        "key": "heightPercent",
+        "type": "integer",
+        "label": "Dropdown height (% of screen)",
+        "min": 30,
+        "max": 90,
+        "step": 5,
+        "defaultValue": 60
+      },
+      {
+        "key": "avatar",
+        "type": "string",
+        "label": "Avatar image path (empty = bundled)",
+        "defaultValue": "",
+        "description": "Absolute or ~/ path to a square PNG of your dot."
+      },
+      {
+        "key": "url",
+        "type": "string",
+        "label": "Dots URL",
+        "defaultValue": "https://chatgpt.com/dots/home",
+        "description": "Your dot's page, e.g. https://chatgpt.com/dots/<id>."
+      }
+    ]
+  }
+}

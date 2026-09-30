@@ -1,0 +1,53 @@
+#!/bin/bash
+# dots-toggle [center-x top width height] | popout
+#
+# Drops the ChatGPT Dots web app down from the bar as a floating window in the Hyprland
+# special workspace "dots", or pops that dropdown out into a normal tiled window.
+# Geometry is monitor-local and comes from BarWidget.qml; the defaults only
+# matter when running this by hand.
+
+CX=${1:-0} TOP=${2:-40} W=${3:-480} H=${4:-720} URL=${5:-https://chatgpt.com/dots/home}
+MATCH='chatgpt\\.com__dots'
+
+find_win() { hyprctl clients -j | jq -c "[.[]|select(.initialClass|test(\"$MATCH\"))][0] // empty"; }
+shown() { hyprctl monitors -j | jq -e '.[]|select(.specialWorkspace.name=="special:dots")' >/dev/null; }
+
+win=$(find_win)
+addr=$(jq -r '.address // empty' <<<"$win")
+dropped=$(jq -r '.workspace.name == "special:dots"' <<<"$win")
+
+if [[ $1 == popout ]]; then
+  [[ $dropped == true ]] || exit 0
+  ws=$(hyprctl activeworkspace -j | jq -r .id)
+  hyprctl --batch "dispatch hl.dsp.window.move({ workspace = \"$ws\", window = \"address:$addr\" }) ; dispatch hl.dsp.window.float({ action = \"disable\", window = \"address:$addr\" })" >/dev/null
+  exit
+fi
+
+if [[ -n $addr && $dropped != true ]]; then # popped out earlier: just focus it
+  hyprctl dispatch "hl.dsp.focus({ window = \"address:$addr\" })" >/dev/null
+  exit
+fi
+
+if shown; then
+  hyprctl dispatch 'hl.dsp.workspace.toggle_special("dots")' >/dev/null
+  exit
+fi
+
+read -r mx my mw < <(hyprctl monitors -j | jq -r '.[]|select(.focused)|"\(.x) \(.y) \(.width / .scale | floor)"')
+x=$((CX - W / 2)); ((x > mw - W)) && x=$((mw - W)); ((x < 0)) && x=0
+
+if [[ -z $addr ]]; then
+  # Named runtime rule, so installing the plugin needs no Hyprland config. It is
+  # re-registered on every launch because a config reload drops runtime rules.
+  hyprctl eval "hl.window_rule({ name = \"telep-dots-dropdown\", match = { initial_class = \".*$MATCH.*\" }, tag = \"-default-opacity\", float = true, size = { $W, $H }, move = { $x, $TOP }, workspace = \"special:dots silent\", border_size = 0, opacity = \"1 1\" })" >/dev/null
+  setsid -f omarchy-launch-webapp "$URL" >/dev/null 2>&1
+  for _ in {1..50}; do
+    addr=$(find_win | jq -r '.address // empty')
+    [[ -n $addr ]] && break
+    sleep 0.1
+  done
+  [[ -n $addr ]] || exit 1
+fi
+
+shown || hyprctl dispatch 'hl.dsp.workspace.toggle_special("dots")' >/dev/null
+hyprctl --batch "dispatch hl.dsp.window.resize({ x = $W, y = $H, window = \"address:$addr\" }) ; dispatch hl.dsp.window.move({ x = $((mx + x)), y = $((my + TOP)), window = \"address:$addr\" })" >/dev/null
