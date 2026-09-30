@@ -1,4 +1,4 @@
-# Odotsey
+# Odotsy
 
 **[ChatGPT Dots](https://chatgpt.com/dots/home) in the [Omarchy](https://omarchy.org) bar.** Click your dot and the chat drops down from the top of the screen. Click again and it tucks away, still loaded. The `pop out` tab under the dropdown's corner turns it into a normal window.
 
@@ -7,7 +7,7 @@ Same design as [Omusey](https://github.com/telep-io/omusey): the dropdown is the
 ## Install
 
 ```sh
-omarchy plugin add https://github.com/telep-io/odotsey.git --enable
+omarchy plugin add https://github.com/telep-io/odotsy.git --enable
 omarchy restart shell
 ```
 
