@@ -6,7 +6,7 @@
   "author": "telep",
   "license": "MIT",
   "description": "ChatGPT Dots in the bar: click your dot and the chat drops down from the top. Pop it out into a window when you need more room.",
-  "preview": "dots.png",
+  "preview": "preview.png",
   "kinds": [
     "bar-widget"
   ],
